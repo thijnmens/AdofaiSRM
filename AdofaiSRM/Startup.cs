@@ -9,7 +9,7 @@ namespace AdofaiSRM
 
         internal static void Load(UnityModManager.ModEntry modEntry)
         {
-            LoadAssembly("Mods/AdofaiSRM/System.Net.Http.dll");
+            LoadAssembly("Mods/AdofaiSRM/RestSharp.dll");
 
             Main.Load(modEntry);
         }

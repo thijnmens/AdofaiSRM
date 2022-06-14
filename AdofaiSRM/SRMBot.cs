@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Net.Http;
 using System.Net.Sockets;
+using RestSharp;
 
 namespace AdofaiSRM
 {
@@ -11,11 +11,10 @@ namespace AdofaiSRM
         private TcpClient twitchClient;
         private StreamReader reader;
         private StreamWriter writer;
-
-        private readonly HttpClient httpClient = new HttpClient();
+        private RestClient client = new RestClient("https://adofai.gg:9200/api/v1");
 
         private readonly string username = "AdofaiSRM";
-        private readonly string password = "bitch you thought"; // https://twitchapps.com/tmi/
+        private readonly string password = "oauth:z4gfznzkoa28iu3pp5s03hcppsaqq7"; // https://twitchapps.com/tmi/
         private readonly string channelName = "thijnmens";
 
         public SRMBot()
@@ -87,8 +86,8 @@ namespace AdofaiSRM
 
                             // Song Request
                             default:
-                                HttpResponseMessage response = await httpClient.GetAsync($"https://adofai.gg:9200/api/v1/levels/{cmd[1]}");
-                                if (!response.IsSuccessStatusCode)
+                                RestResponse response = await client.GetAsync(new RestRequest($"levels/{cmd[1]}"));
+                                if (!response.IsSuccessful)
                                 {
                                     SendMessage($"Something went wrong while request songID {cmd[1]}, does it exist?");
                                 }
