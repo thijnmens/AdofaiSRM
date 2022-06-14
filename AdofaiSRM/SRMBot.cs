@@ -14,7 +14,7 @@ namespace AdofaiSRM
         private RestClient client = new RestClient("https://adofai.gg:9200/api/v1");
 
         private readonly string username = "AdofaiSRM";
-        private readonly string password = "oauth:z4gfznzkoa28iu3pp5s03hcppsaqq7"; // https://twitchapps.com/tmi/
+        private readonly string password = "already revoked this"; // https://twitchapps.com/tmi/
         private readonly string channelName = "thijnmens";
 
         public SRMBot()
