@@ -2,6 +2,13 @@
 using System.Timers;
 using UnityModManagerNet;
 using WebSocketSharp;
+using UnityEngine;
+using System.Collections.Generic;
+using ADOFAI;
+using GDMiniJSON;
+using System.IO;
+using HarmonyLib;
+using System.Reflection;
 
 namespace AdofaiSRM
 {
@@ -11,7 +18,7 @@ namespace AdofaiSRM
         public static WebSocket ws;
         public static UnityModManager.ModEntry mod;
         public static bool enabled;
-        private static System.Timers.Timer connectionRetryTimer;
+        public static System.Timers.Timer connectionRetryTimer;
 
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
@@ -55,11 +62,11 @@ namespace AdofaiSRM
         private static void OnUpdate(UnityModManager.ModEntry modEntry, float dt)
         {
 
-        }
+        } 
 
         private static void OnMessage(object sender, MessageEventArgs messageEventArgs)
         {
-            mod.Logger.Log(messageEventArgs.Data);
+            
         }
 
         private static WebSocket InitClient(string IPAdress, int Port)
@@ -76,7 +83,7 @@ namespace AdofaiSRM
             };
 
             connectionRetryTimer.Start();
-
+            
             return ws;
         }
     }
