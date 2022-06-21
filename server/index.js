@@ -9,7 +9,7 @@ wss.on('connection', function connection(ws) {
 	ws.on('pong', heartbeat);
 	client.on('message', (channel, tags, message, self) => {
 		// Ignore echoed messages.
-		if (self || !message.startsWith('>')) return;
+		if (self || !message.startsWith('!')) return;
 
 		const args = message.slice(1).split(' ');
 		const command = args.shift().toLowerCase();
