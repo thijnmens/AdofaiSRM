@@ -1,0 +1,5 @@
+{
+	"_comment": "Get your twitch token from https://twitchapps.com/tmi/",
+	"twitchToken": "oauth:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+	"twitchChannels": ["your channel name here"]
+}

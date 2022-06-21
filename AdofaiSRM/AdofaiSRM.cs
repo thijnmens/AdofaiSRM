@@ -7,6 +7,8 @@ using ADOFAI;
 using GDMiniJSON;
 using HarmonyLib;
 using System.Linq;
+using System.Diagnostics;
+using System.IO;
 
 namespace AdofaiSRM
 {
@@ -18,13 +20,13 @@ namespace AdofaiSRM
         public static bool enabled;
         public static System.Timers.Timer connectionRetryTimer;
         public static Dictionary<string, GenericDataCLS> extraLevels = new Dictionary<string, GenericDataCLS>();
-        //public static FolderDataCLS requestFolder = new FolderDataCLS("SongRequestManager", 1, "Thijnmens", "", "SongRequestManager desc", "portal.png", "icon.png", "ffffff".HexToColor());
         public static uint[] requestedIds = new uint[0];
 
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
             try
             {
+                Process.Start(modEntry.Path + "server.exe");
                 ws = InitClient("localhost", 666);
                 var harmony = new Harmony("com.thijnmens.adofaisrm");
 
@@ -69,7 +71,6 @@ namespace AdofaiSRM
             {
                 SteamWorkshop.Subscribe(new Steamworks.PublishedFileId_t(uint.Parse(message)));
                 requestedIds = requestedIds.Concat(new uint[] { uint.Parse(message) }).ToArray();
-                Console.WriteLine(requestedIds.Length);
             }
             
         }
@@ -89,7 +90,7 @@ namespace AdofaiSRM
             connectionRetryTimer = new System.Timers.Timer(2000) { AutoReset = true };
 
             connectionRetryTimer.Elapsed += (object sender, ElapsedEventArgs e) => {
-                ws.Connect();
+                ws.ConnectAsync();
                 if (ws.Ping())
                 {
                     connectionRetryTimer.Stop();

@@ -5,7 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "nodemon index.js",
-		"test": "test"
+		"test": "test",
+		"build": "pkg index.js -t node16-win --out-path ./build/"
 	},
 	"repository": {
 		"type": "git",

@@ -264,3 +264,4 @@ __pycache__/
 server/.env
 server/yarn.lock
 server/node_modules
+server/build
