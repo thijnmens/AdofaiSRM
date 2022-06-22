@@ -87,7 +87,7 @@ namespace AdofaiSRM
         private static WebSocket InitClient(string IPAdress, int Port)
         {
             WebSocket ws = new WebSocket($"ws://{IPAdress}:{Port}");
-            connectionRetryTimer = new System.Timers.Timer(2000) { AutoReset = true };
+            /*connectionRetryTimer = new System.Timers.Timer(2000) { AutoReset = true };
 
             connectionRetryTimer.Elapsed += (object sender, ElapsedEventArgs e) => {
                 ws.ConnectAsync();
@@ -97,7 +97,8 @@ namespace AdofaiSRM
                 }
             };
 
-            connectionRetryTimer.Start();
+            connectionRetryTimer.Start();*/
+            ws.Connect();
             
             return ws;
         }
@@ -117,7 +118,10 @@ namespace AdofaiSRM
                 Dictionary<string, bool> loadedLevelIsDeletedField = (Dictionary<string, bool>)AccessTools.Field(typeof(scnCLS), "loadedLevelIsDeleted").GetValue(__instance);
                 Dictionary<string, bool> isWorkshopLevelField = (Dictionary<string, bool>)AccessTools.Field(typeof(scnCLS), "isWorkshopLevel").GetValue(__instance);
                 Dictionary<string, string> loadedLevelDirsField = (Dictionary<string, string>)AccessTools.Field(typeof(scnCLS), "loadedLevelDirs").GetValue(__instance);
-
+                if(extraLevelsField.ContainsKey("Folder:SongRequestManager"))
+                {
+                    extraLevelsField.Remove("Folder:SongRequestManager");
+                }
                 FolderDataCLS requestFolder = new FolderDataCLS("SongRequestManager", 1, "Thijnmens", "", "SongRequestManager desc", "portal.png", "icon.png", "ffffff".HexToColor());
 
                 for (int i = 0; i < AdofaiSRM.requestedIds.Length; i++)
