@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AdofaiSRM
 {
@@ -198,10 +195,12 @@ namespace AdofaiSRM
 
             [JsonProperty("type-unsupported")]
             public int TypeUnsupported { get; set; }
+
             public int suspicious { get; set; }
 
             [JsonProperty("confirmed-timeout")]
             public int ConfirmedTimeout { get; set; }
+
             public int timeout { get; set; }
             public int failure { get; set; }
             public int malicious { get; set; }
@@ -223,7 +222,5 @@ namespace AdofaiSRM
             public int harmless { get; set; }
             public int malicious { get; set; }
         }
-
-
     }
 }

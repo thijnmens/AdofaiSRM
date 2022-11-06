@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System;
+﻿using System;
+using System.IO;
 using UnityModManagerNet;
 
 namespace AdofaiSRM
@@ -14,14 +14,15 @@ namespace AdofaiSRM
                 LoadAssembly("Mods/AdofaiSRM/System.Net.Http.dll");
                 LoadAssembly("Mods/AdofaiSRM/Newtonsoft.Json.dll");
                 LoadAssembly("Mods/AdofaiSRM/System.Runtime.Serialization.dll");
-                
-                bool success = AdofaiSRM.Load(modEntry);           
+
+                bool success = AdofaiSRM.Load(modEntry);
                 if (!success)
                 {
                     return false;
                 }
                 return true;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 modEntry.Logger.Error(e.ToString());
                 return false;

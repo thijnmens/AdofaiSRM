@@ -1,10 +1,10 @@
-﻿using HarmonyLib;
+﻿using AdofaiSRM.src;
+using HarmonyLib;
 using Newtonsoft.Json;
 using Steamworks;
 using System;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using UnityModManagerNet;
@@ -18,7 +18,6 @@ namespace AdofaiSRM
         public static uint[] requestedIds = new uint[1] { 2830407654u };
         private static WebSocket ws;
         private static readonly TwitchHandler twitchHandler = new TwitchHandler();
-        private static readonly HttpClient client = new HttpClient();
 
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
@@ -50,84 +49,78 @@ namespace AdofaiSRM
             {
                 case string privmsg when privmsg.Contains("PRIVMSG"):
                     string msg = privmsg.Split(':').Last().ToLower();
-                    if (msg.StartsWith("!"))
+                    if (msg.StartsWith(">"))
                     {
                         string[] command = msg.Split(' ');
                         string msgID = e.Data.Split(';')[8].Split('=').Last();
                         switch (command[0].Trim())
                         {
-                            case "!srm":
-                                HttpResponseMessage result = client.GetAsync($"https://adofai.gg:9200/api/v1/levels/{command[1]}").Result;
-                                if (!result.IsSuccessStatusCode)
+                            //
+                            // !srm <code>
+                            //     code: platform:id [gg:3480] [steam:2830407654]
+                            // Add song to queue
+                            //
+                            case ">srm":
+
+                                HttpResponseMessage levelDataResult = AdofaiGG.getLevelData(command[1]);
+                                if (!levelDataResult.IsSuccessStatusCode)
                                 {
                                     twitchHandler.SendReply(msgID, $"Sorry, we could not find a song with id {command[1]}. Did you make a typo?");
+                                    mod.Logger.Warning($"Could not find song with id {command[1]}");
                                     break;
                                 }
-                                JsonObjects.Levels data = JsonConvert.DeserializeObject<JsonObjects.Levels>(result.Content.ReadAsStringAsync().Result);
+
+                                JsonObjects.Levels data = JsonConvert.DeserializeObject<JsonObjects.Levels>(levelDataResult.Content.ReadAsStringAsync().Result);
+
+                                // Add level to queue
                                 AddToQueue(data);
                                 twitchHandler.SendReply(msgID, $"I've sucessfully added {data.title} to the queue");
+                                mod.Logger.Log($"Added {data.title} to queue with id {data.id}");
                                 break;
 
-                            case "!scan":
+                            //
+                            // !scan
+                            // Test if virustotal is configured correctly
+                            //
+                            case ">scan":
+
                                 twitchHandler.SendReply(msgID, "Scanning... WARNING: This will take around 30 seconds");
-                                var fileUploadRequest = new HttpRequestMessage
-                                {
-                                    Method = HttpMethod.Post,
-                                    RequestUri = new Uri("https://www.virustotal.com/api/v3/files"),
-                                    Headers =
-                                    {
-                                        { "accept", "application/json" },
-                                        { "x-apikey", "8cefe816c41ffbd51ec1334f25dda645b6fc7fe88f64a6eebb0bae56e7ed200b" },
-                                    },
-                                    Content = new MultipartFormDataContent {
-                                        new StringContent(TestFile.GetTestFile2())
-                                        {
-                                            Headers = {
-                                                ContentType = new MediaTypeHeaderValue("application/octet-stream"),
-                                                ContentDisposition = new ContentDispositionHeaderValue("form-data")
-                                                {
-                                                    Name = "file",
-                                                    FileName = "eicar.com"
-                                                }
-                                            }
-                                        }
-                                    }
-                                };
-                                await Task.Delay(30000);
-                                var fileUploadResult = client.SendAsync(fileUploadRequest).Result;
+                                VirusScanner fileScan = new VirusScanner("", "", "");
+
+                                // Upload file to virustotal
+                                HttpResponseMessage fileUploadResult = fileScan.UploadFile();
                                 if (!fileUploadResult.IsSuccessStatusCode)
                                 {
-                                    twitchHandler.SendReply(msgID, $"Error! {fileUploadResult.Content.ReadAsStringAsync().Result}");
-                                    mod.Logger.Error($"Error! {fileUploadResult.Content.ReadAsStringAsync().Result}");
+                                    twitchHandler.SendReply(msgID, "Something went wrong while uploading the file, please check the console.");
+                                    mod.Logger.Error(fileUploadResult.ToString());
                                     break;
                                 }
                                 JsonObjects.Analysis analysis = JsonConvert.DeserializeObject<JsonObjects.Analysis>(fileUploadResult.Content.ReadAsStringAsync().Result);
                                 string decodestring = Encoding.UTF8.GetString(Convert.FromBase64String(analysis.data.id));
-                                
-                                var analysisRequest = new HttpRequestMessage
-                                {
-                                    Method = HttpMethod.Get,
-                                    RequestUri = new Uri($"https://www.virustotal.com/api/v3/files/{decodestring.Split(':')[0]}"),
-                                    Headers =
-                                    {
-                                        { "accept", "application/json" },
-                                        { "x-apikey", "8cefe816c41ffbd51ec1334f25dda645b6fc7fe88f64a6eebb0bae56e7ed200b" },
-                                    }
-                                };
-                                var analysisResult = client.SendAsync(analysisRequest).Result;
+                                await Task.Delay(30000); // Wait 30 seconds for analysis to complete
+
+                                // Get analysis results back from virustotal
+                                HttpResponseMessage analysisResult = fileScan.getAnalysisResults(decodestring.Split(':')[0]);
                                 if (!analysisResult.IsSuccessStatusCode)
                                 {
-                                    twitchHandler.SendReply(msgID, $"Error! {analysisResult.Content.ReadAsStringAsync().Result}");
-                                    mod.Logger.Error($"Error! {fileUploadResult.Content.ReadAsStringAsync().Result}");
+                                    twitchHandler.SendReply(msgID, "Something went wrong while getting the analysis of the file, please check the console.");
+                                    mod.Logger.Error(analysisResult.ToString());
                                     break;
                                 }
                                 JsonObjects.FileReport fileReport = JsonConvert.DeserializeObject<JsonObjects.FileReport>(analysisResult.Content.ReadAsStringAsync().Result);
                                 twitchHandler.SendReply(msgID, $"Scanning done! malicious: {fileReport.data.attributes.last_analysis_stats.malicious} harmless: {fileReport.data.attributes.last_analysis_stats.undetected}");
+
                                 break;
 
+                            //
+                            // Unkown command
+                            // Runs if the types command is unknown
+                            //
                             default:
+
                                 mod.Logger.Log(command[0]);
                                 twitchHandler.SendReply(msgID, $"Unkown command {command[0]}");
+
                                 break;
                         }
                     }
@@ -148,7 +141,7 @@ namespace AdofaiSRM
             ws.Send("CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands");
             ws.Send("NICK AdofaiSRM");
             ws.Send("JOIN #sussybdrffityfty");
-            ws.Send("PRIVMSG #sussybdrffityfty :Request songs with !srm <code>");
+            ws.Send("PRIVMSG #sussybdrffityfty :Request songs with >srm <code>");
         }
 
         private class TwitchHandler
