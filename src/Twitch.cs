@@ -23,8 +23,8 @@ namespace AdofaiSRM.src
             foreach (string channel in channels)
             {
                 ws.Send($"JOIN #{channel}");
-                Send($"Request songs with >srm <code>", channel);
                 logger.Log($"Connected to channel {channel}");
+                Send($"Request songs with >srm <code>", channel);
             }
         }
 

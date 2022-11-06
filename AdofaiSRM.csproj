@@ -94,7 +94,9 @@
     <Compile Include="src\Loader.cs" />
     <Compile Include="src\Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Queue.cs" />
     <Compile Include="src\Secrets.cs" />
+    <Compile Include="src\Steam.cs" />
     <Compile Include="src\Twitch.cs" />
     <Compile Include="src\VirusScanner.cs" />
   </ItemGroup>

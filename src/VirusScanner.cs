@@ -49,7 +49,6 @@ namespace AdofaiSRM.src
 
         public HttpResponseMessage getAnalysisResults(string analysisId)
         {
-            Console.WriteLine("Getting analysis");
             var analysisRequest = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
@@ -59,7 +58,6 @@ namespace AdofaiSRM.src
                     { "x-apikey", Secrets.GetVirusTotalApiKey() },
                 }
             };
-            Console.WriteLine("Sending analysis");
             return client.SendAsync(analysisRequest).Result;
         }
     }

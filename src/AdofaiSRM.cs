@@ -1,8 +1,8 @@
 ﻿using AdofaiSRM.src;
 using HarmonyLib;
 using Newtonsoft.Json;
-using Steamworks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -58,12 +58,11 @@ namespace AdofaiSRM
                         switch (command[0].Trim())
                         {
                             //
-                            // !srm <code>
+                            // >srm <code>
                             //     code: platform:id [gg:3480] [steam:2830407654]
                             // Add song to queue
                             //
                             case ">srm":
-
                                 HttpResponseMessage levelDataResult = AdofaiGG.getLevelData(command[1]);
                                 if (!levelDataResult.IsSuccessStatusCode)
                                 {
@@ -75,13 +74,13 @@ namespace AdofaiSRM
                                 JsonObjects.LevelResult data = JsonConvert.DeserializeObject<JsonObjects.LevelResult>(levelDataResult.Content.ReadAsStringAsync().Result);
 
                                 // Add level to queue
-                                AddToQueue(data);
+                                Queue.AddToQueueAdofai(data.workshop.Split('=').Last(), data.title);
                                 twitch.SendReply(msgID, $"I've sucessfully added {data.title} to the queue");
                                 mod.Logger.Log($"Added {data.title} to queue with id {data.id}");
                                 break;
 
                             //
-                            // !scan
+                            // >scan
                             // Test if virustotal is configured correctly
                             //
                             case ">scan":
@@ -116,6 +115,28 @@ namespace AdofaiSRM
                                 break;
 
                             //
+                            // >queue <page>
+                            //     page: page number, default 1
+                            //  Displays current queue up to 5 per page
+                            //
+                            case ">queue":
+                                int page = command.Length < 2 ? int.Parse(command[1]) : 1;
+                                Dictionary<int, string> queueItems = Queue.GetQueueNames(5, page);
+                                if (queueItems.Count == 0)
+                                {
+                                    twitch.SendReply(msgID, $"This page does not exist!");
+                                    mod.Logger.Warning($"requested page {page} which does not exist");
+                                    break;
+                                }
+                                string items = "";
+                                foreach (string name in queueItems.Values)
+                                {
+                                    items += $"{name} ";
+                                }
+                                twitch.SendReply(msgID, $"Items in queue: {items}");
+                                break;
+
+                            //
                             // Unkown command
                             // Runs if the types command is unknown
                             //
@@ -131,11 +152,6 @@ namespace AdofaiSRM
 
                 default: break;
             }
-        }
-
-        private static void AddToQueue(JsonObjects.LevelResult data)
-        {
-            SteamUGC.SubscribeItem(new PublishedFileId_t(Convert.ToUInt64(data.workshop.Split('=').Last())));
         }
     }
 }
