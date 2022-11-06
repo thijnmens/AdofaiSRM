@@ -87,7 +87,7 @@ namespace AdofaiSRM
                             case ">scan":
 
                                 twitch.SendReply(msgID, "Scanning... WARNING: This will take around 30 seconds");
-                                VirusScanner fileScan = new VirusScanner("", "", "");
+                                VirusScanner fileScan = new VirusScanner("application/x-zip-compressed", "eicar_com.zip", "UEsDBAoAAAAAAOCYuCg8z1FoRAAAAEQAAAAJAAAAZWljYXIuY29tWDVPIVAlQEFQWzRcUFpYNTQoUF4pN0NDKTd9JEVJQ0FSLVNUQU5EQVJELUFOVElWSVJVUy1URVNULUZJTEUhJEgrSCpQSwECFAAKAAAAAADgmLgoPM9RaEQAAABEAAAACQAAAAAAAAABACAA/4EAAAAAZWljYXIuY29tUEsFBgAAAAABAAEANwAAAGsAAAAAAA==");
 
                                 // Upload file to virustotal
                                 HttpResponseMessage fileUploadResult = fileScan.UploadFile();

@@ -31,7 +31,7 @@ namespace AdofaiSRM.src
                 },
                 Content = new MultipartFormDataContent
                 {
-                    new StringContent($"")
+                    new StringContent($"data:{contentType};name={fileName};base64,{base64}")
                     {
                         Headers = {
                             ContentType = new MediaTypeHeaderValue(contentType),
