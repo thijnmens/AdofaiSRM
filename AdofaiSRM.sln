@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.2.32602.215
+VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdofaiSRM", "AdofaiSRM\AdofaiSRM.csproj", "{FFD7332B-21DD-43D9-9E27-1E27207B4F9E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdofaiSRM", "AdofaiSRM.csproj", "{598836AC-19A2-4390-A61E-ADCE8BBA0021}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FFD7332B-21DD-43D9-9E27-1E27207B4F9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FFD7332B-21DD-43D9-9E27-1E27207B4F9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FFD7332B-21DD-43D9-9E27-1E27207B4F9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FFD7332B-21DD-43D9-9E27-1E27207B4F9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{598836AC-19A2-4390-A61E-ADCE8BBA0021}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{598836AC-19A2-4390-A61E-ADCE8BBA0021}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{598836AC-19A2-4390-A61E-ADCE8BBA0021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{598836AC-19A2-4390-A61E-ADCE8BBA0021}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {383BF674-3147-408F-8BAB-348739EDBF9F}
+		SolutionGuid = {3AB1CE96-2475-40DA-857D-F7C9BDA8FA71}
 	EndGlobalSection
 EndGlobal
