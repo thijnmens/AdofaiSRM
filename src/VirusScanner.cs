@@ -27,7 +27,7 @@ namespace AdofaiSRM.src
                 Headers =
                 {
                     { "accept", "application/json" },
-                    { "x-apikey", Secrets.getVirusTotalApiKey() },
+                    { "x-apikey", Secrets.GetVirusTotalApiKey() },
                 },
                 Content = new MultipartFormDataContent
                 {
@@ -49,15 +49,17 @@ namespace AdofaiSRM.src
 
         public HttpResponseMessage getAnalysisResults(string analysisId)
         {
+            Console.WriteLine("Getting analysis");
             var analysisRequest = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri($"https://www.virustotal.com/api/v3/files/{analysisId}"),
                 Headers = {
                     { "accept", "application/json" },
-                    { "x-apikey", Secrets.getVirusTotalApiKey() },
+                    { "x-apikey", Secrets.GetVirusTotalApiKey() },
                 }
             };
+            Console.WriteLine("Sending analysis");
             return client.SendAsync(analysisRequest).Result;
         }
     }
