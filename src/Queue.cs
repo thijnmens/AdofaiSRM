@@ -1,47 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using UnityEngine;
+using UnityModManagerNet;
 
 namespace AdofaiSRM.src
 {
     internal class Queue
     {
-        private static Dictionary<string, QueueItem> queue = new Dictionary<string, QueueItem>();
+        private static List<QueueItem> queue = new List<QueueItem>();
+
+        public static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            GUILayout.Label("Queue");
+            foreach (QueueItem item in queue)
+            {
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button(item.name))
+                {
+                    ADOBase.controller.LoadCustomWorld(item.path);
+                }
+                if (GUILayout.Button("Remove", GUILayout.MaxWidth(Screen.width / 10)))
+                {
+                    queue.Remove(item);
+                }
+                GUILayout.EndHorizontal();
+            }
+        }
 
         public static void AddToQueueAdofai(string id, string name)
         {
-            queue.Add(id, new QueueItem(id, name));
+            Steam.SubcribeToItem(Convert.ToUInt64(id));
+            queue.Add(new QueueItem(id, name));
+        }
+
+        public static void AddToQueueFile(string id, string name, string path)
+        {
+            queue.Add(new QueueItem(id, name, path));
+        }
+
+        public static void AddToQueueSteam(string id)
+        {
+            AdofaiSRM.mod.Logger.Log(id);
+            queue.Add(new QueueItem(id, id));
             Steam.SubcribeToItem(Convert.ToUInt64(id));
         }
 
-        public static void AddToQueueSteam()
+        public static List<string> GetQueueNames(int amount, int page)
         {
-            throw new NotImplementedException();
-        }
-
-        public static Dictionary<int, string> GetQueueNames(int amount, int page)
-        {
-            Dictionary<int, string> queuePage = new Dictionary<int, string>();
-            try
+            List<string> items = new List<string>();
+            foreach (int i in Enumerable.Range(page * amount, page * amount + amount))
             {
-                foreach (int i in Enumerable.Range(amount * page, amount * page + page))
+                AdofaiSRM.mod.Logger.Log(i.ToString());
+                try
                 {
-                    try
-                    {
-                        queuePage.Add(i, queue.ElementAt(i).Value.name);
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        return queuePage;
-                    }
+                    items.Add(queue[i].name);
                 }
-                return queuePage;
+                catch { }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return queuePage;
-            }
+            return items;
         }
     }
 
@@ -49,11 +67,20 @@ namespace AdofaiSRM.src
     {
         public string id;
         public string name;
+        public string path;
 
-        public QueueItem(string id, string name)
+        public QueueItem(string id, string name, string path = null)
         {
             this.id = id;
             this.name = name;
+            if (path != null)
+            {
+                this.path = path;
+            }
+            else
+            {
+                this.path = Path.Combine(AppContext.BaseDirectory, $"../../workshop/content/977950/{id}/main.adofai");
+            }
         }
     }
 }

@@ -6,37 +6,14 @@ namespace AdofaiSRM
 {
     internal static class Loader
     {
-        internal static bool Load(UnityModManager.ModEntry modEntry)
+        internal static void Load(UnityModManager.ModEntry modEntry)
         {
-            try
-            {
-                LoadAssembly("Mods/AdofaiSRM/websocket-sharp.dll");
-                LoadAssembly("Mods/AdofaiSRM/System.Net.Http.dll");
-                LoadAssembly("Mods/AdofaiSRM/Newtonsoft.Json.dll");
-                LoadAssembly("Mods/AdofaiSRM/System.Runtime.Serialization.dll");
+            File.Copy(Path.Combine(modEntry.Path, "System.Runtime.Serialization.dll"), Path.Combine(AppContext.BaseDirectory, "A Dance of Fire and Ice_Data/Managed/System.Runtime.Serialization.dll"), true);
+            File.Copy(Path.Combine(modEntry.Path, "websocket-sharp.dll"), Path.Combine(AppContext.BaseDirectory, "A Dance of Fire and Ice_Data/Managed/websocket-sharp.dll"), true);
+            File.Copy(Path.Combine(modEntry.Path, "System.Net.Http.dll"), Path.Combine(AppContext.BaseDirectory, "A Dance of Fire and Ice_Data/Managed/System.Net.Http.dll"), true);
+            File.Copy(Path.Combine(modEntry.Path, "Newtonsoft.Json.dll"), Path.Combine(AppContext.BaseDirectory, "A Dance of Fire and Ice_Data/Managed/Newtonsoft.Json.dll"), true);
 
-                bool success = AdofaiSRM.Load(modEntry);
-                if (!success)
-                {
-                    return false;
-                }
-                return true;
-            }
-            catch (Exception e)
-            {
-                modEntry.Logger.Error(e.ToString());
-                return false;
-            }
-        }
-
-        private static void LoadAssembly(string path)
-        {
-            using (FileStream stream = new FileStream(path, FileMode.Open))
-            {
-                byte[] data = new byte[stream.Length];
-                stream.Read(data, 0, data.Length);
-                AppDomain.CurrentDomain.Load(data);
-            }
+            AdofaiSRM.Load(modEntry);
         }
     }
 }

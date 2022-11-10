@@ -213,5 +213,25 @@ namespace AdofaiSRM
                 public string name { get; set; }
             }
         }
+
+        public class ConfigJson
+        {
+            public string Id { get; set; }
+            public string Author { get; set; }
+            public string DisplayName { get; set; }
+            public string Version { get; set; }
+            public string EntryMethod { get; set; }
+            public ConfigData Config { get; set; }
+
+            public class ConfigData
+            {
+                public string VirusTotalKey { get; set; }
+                public string TwitchKey { get; set; }
+                public string YoutubeKey { get; set; }
+                public string Language { get; set; }
+                public bool WorkshopOnlyMode { get; set; }
+                public List<string> Channels { get; set; }
+            }
+        }
     }
 }
