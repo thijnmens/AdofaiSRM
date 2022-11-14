@@ -19,7 +19,7 @@ namespace AdofaiSRM
         public static UnityModManager.ModEntry mod;
         public static uint[] requestedIds = new uint[1] { 2830407654u };
         private static Twitch twitch;
-        private static WebClient webClient = new WebClient();
+        private static readonly WebClient webClient = new WebClient();
 
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
@@ -139,7 +139,11 @@ namespace AdofaiSRM
                                                     File.Delete(Path.Combine(AppContext.BaseDirectory, $"CustomSongs{Path.DirectorySeparatorChar}{data.id}{Path.DirectorySeparatorChar}{data.id}.zip"));
                                                     break;
                                                 }
+
+                                                // Unzip file
                                                 ZipUtil.Unzip(Path.Combine(AppContext.BaseDirectory, $"CustomSongs{Path.DirectorySeparatorChar}{data.id}{Path.DirectorySeparatorChar}{data.id}.zip"), Path.Combine(AppContext.BaseDirectory, $"CustomSongs{Path.DirectorySeparatorChar}{data.id}{Path.DirectorySeparatorChar}"));
+
+                                                // Add to queue
                                                 string[] files = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, $"CustomSongs{Path.DirectorySeparatorChar}{data.id}"), "*.adofai");
                                                 files.ToList().Remove(Path.Combine(AppContext.BaseDirectory, $"CustomSongs{Path.DirectorySeparatorChar}{data.id}{Path.DirectorySeparatorChar}backup.adofai"));
                                                 Queue.AddToQueueFile(data.id.ToString(), data.title, files.Last());
